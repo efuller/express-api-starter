@@ -1,0 +1,19 @@
+{
+  "name": "express-api-starter",
+  "version": "0.1.0",
+  "description": "Starter API build on Express.",
+  "main": "index.js",
+  "repository": "git@github.com:efuller/express-api-starter.git",
+  "author": "Eric Fuller <info@glassmoonmedia.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "devDependencies": {
+    "dotenv": "^4.0.0",
+    "nodemon": "^1.11.0"
+  },
+  "dependencies": {
+    "express": "^4.15.3"
+  }
+}
