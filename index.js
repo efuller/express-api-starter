@@ -1,3 +1,15 @@
+const mongoose = require('mongoose');
+
+// Environment Variables
+require('dotenv').config();
+
+// Database connection.
+mongoose.connect(process.env.DATABASE, { useMongoClient: true });
+mongoose.Promise = global.Promise; // Tell Mongoose to use ES6 promises
+mongoose.connection.on('error', (err) => {
+	console.error(`🙅 🚫 🙅 🚫 🙅 🚫 🙅 🚫 → ${err.message}`);
+});
+
 const app = require('./server');
 
 // Engage!
