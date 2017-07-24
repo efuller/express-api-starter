@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 
-// Environment Variables
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+	// Environment Variables
+	require('dotenv').config();
+}
 
 // Database connection.
 mongoose.connect(process.env.DATABASE, { useMongoClient: true });
