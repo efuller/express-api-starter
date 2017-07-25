@@ -1,9 +1,7 @@
 const User = require('./userModel');
 const setUserInfo = require('./helpers').setUserInfo;
 
-//= =======================================
 // User Routes
-//= =======================================
 exports.viewProfile = function (req, res, next) {
 	const userId = req.params.userId;
 

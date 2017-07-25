@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
 const User = require('../user/userModel');
 const setUserInfo = require('../user/helpers').setUserInfo;
 const getRole = require('../user/helpers').getRole;
@@ -12,7 +11,7 @@ function generateToken(user) {
 }
 
 // Login
-exports.login = function (req, res, next) {
+exports.login = function (req, res) {
 	const userInfo = setUserInfo(req.user);
 
 	res.status(200).json({

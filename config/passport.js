@@ -1,9 +1,9 @@
 // Importing Passport, strategies, and config
-const passport = require('passport'),
-	User = require('../api/user/userModel'),
-	JwtStrategy = require('passport-jwt').Strategy,
-	ExtractJwt = require('passport-jwt').ExtractJwt,
-	LocalStrategy = require('passport-local');
+const passport = require('passport');
+const User = require('../api/user/userModel');
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+const LocalStrategy = require('passport-local');
 
 // Setting username field to email rather than username
 const localOptions = {
@@ -31,8 +31,6 @@ const jwtOptions = {
 	jwtFromRequest: ExtractJwt.fromAuthHeader(),
 	// Telling Passport where to find the secret
 	secretOrKey: process.env.SECRET
-
-	// TO-DO: Add issuer and audience checks
 };
 
 // Setting up JWT login strategy

@@ -8,44 +8,38 @@ const ROLE_ADMIN = require('../../config/constants').ROLE_ADMIN;
 
 const Schema = mongoose.Schema;
 
-//= ===============================
 // User Schema
-//= ===============================
 const UserSchema = new Schema({
-		email: {
-			type: String,
-			lowercase: true,
-			unique: true,
-			required: true
-		},
-		password: {
-			type: String,
-			required: true
-		},
-		profile: {
-			firstName: { type: String },
-			lastName: { type: String }
-		},
-		role: {
-			type: String,
-			enum: [ROLE_MEMBER, ROLE_CLIENT, ROLE_OWNER, ROLE_ADMIN],
-			default: ROLE_MEMBER
-		},
-		resetPasswordToken: { type: String },
-		resetPasswordExpires: { type: Date }
+	email: {
+		type: String,
+		lowercase: true,
+		unique: true,
+		required: true
 	},
-	{
-		timestamps: true
-	});
-
-//= ===============================
-// User ORM Methods
-//= ===============================
+	password: {
+		type: String,
+		required: true
+	},
+	profile: {
+		firstName: { type: String },
+		lastName: { type: String }
+	},
+	role: {
+		type: String,
+		enum: [ROLE_MEMBER, ROLE_CLIENT, ROLE_OWNER, ROLE_ADMIN],
+		default: ROLE_MEMBER
+	},
+	resetPasswordToken: { type: String },
+	resetPasswordExpires: { type: Date }
+},
+{
+	timestamps: true
+});
 
 // Pre-save of user to database, hash password if password is modified or new
 UserSchema.pre('save', function (next) {
-	const user = this,
-		SALT_FACTOR = 5;
+	const user = this;
+	const SALT_FACTOR = 5;
 
 	if (!user.isModified('password')) return next();
 
