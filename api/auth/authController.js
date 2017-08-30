@@ -1,23 +1,31 @@
 const jwt = require('jsonwebtoken');
 const User = require('../user/userModel');
-const setUserInfo = require('../user/helpers').setUserInfo;
 const getRole = require('../user/helpers').getRole;
 
-// Generate JWT
-function generateToken(user) {
-	return jwt.sign(user, process.env.SECRET, {
-		expiresIn: 604800 // in seconds
-	});
-}
-
 // Login
-exports.login = function (req, res) {
-	const userInfo = setUserInfo(req.user);
+exports.login = function (req, res, next) {
+	if (req.body.email && req.body.password) {
+		var userEmail = req.body.email;
+		var password = req.body.password;
+	}
 
-	res.status(200).json({
-		token: `JWT ${generateToken(userInfo)}`,
-		user: userInfo
-	});
+	User.findOne({ email: userEmail })
+		.then(function(user) {
+			if (!user) {
+				res.status(401).json({ message: 'No such user found' });
+				return next();
+			}
+
+			user.comparePassword(password, function(err, isMatch) {
+				if (err) { next(err); }
+				if (!isMatch) {
+					res.status(401).json({ message: 'Passwords did not match.' });
+				} else {
+					console.log(res.user);
+					res.json({ message: 'ok', user: user.toAuthJSON() });
+				}
+			});
+		}).catch(next);
 };
 
 
@@ -59,17 +67,11 @@ exports.register = function (req, res, next) {
 			profile: { firstName, lastName }
 		});
 
-		user.save((err, user) => {
-			if (err) { return next(err); }
-
-			// Respond with JWT if user was created
-			const userInfo = setUserInfo(user);
-
-			res.status(201).json({
-				token: `JWT ${generateToken(userInfo)}`,
-				user: userInfo
-			});
-		});
+		user.save()
+			.then(function() {
+				res.json({ user: user.toAuthJSON() });
+			})
+			.catch(next);
 	});
 };
 
@@ -78,7 +80,7 @@ exports.roleAuthorization = function (requiredRole) {
 	return function (req, res, next) {
 		const user = req.user;
 
-		User.findById(user._id, (err, foundUser) => {
+		User.findById(user.id, (err, foundUser) => {
 			if (err) {
 				res.status(422).json({ error: 'No user was found.' });
 				return next(err);

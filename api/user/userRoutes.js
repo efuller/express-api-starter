@@ -8,7 +8,6 @@ const ROLE_ADMIN = require('../../config/constants').ROLE_ADMIN;
 
 // Middleware to require login/auth.
 const requireAuth = passport.authenticate('jwt', { session: false });
-const requireLogin = passport.authenticate('local', { session: false });
 
 // Test protected route.
 router.route('/protected')

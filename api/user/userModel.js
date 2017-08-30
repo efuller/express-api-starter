@@ -1,6 +1,7 @@
 // Importing Node packages required for schema
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
+const jwt = require('jsonwebtoken');
 const ROLE_MEMBER = require('../../config/constants').ROLE_MEMBER;
 const ROLE_CLIENT = require('../../config/constants').ROLE_CLIENT;
 const ROLE_OWNER = require('../../config/constants').ROLE_OWNER;
@@ -37,7 +38,7 @@ const UserSchema = new Schema({
 });
 
 // Pre-save of user to database, hash password if password is modified or new
-UserSchema.pre('save', function (next) {
+UserSchema.pre('save', function(next) {
 	const user = this;
 	const SALT_FACTOR = 5;
 
@@ -48,6 +49,7 @@ UserSchema.pre('save', function (next) {
 
 		bcrypt.hash(user.password, salt, null, (err, hash) => {
 			if (err) return next(err);
+
 			user.password = hash;
 			next();
 		});
@@ -55,12 +57,34 @@ UserSchema.pre('save', function (next) {
 });
 
 // Method to compare password for login
-UserSchema.methods.comparePassword = function (candidatePassword, cb) {
+UserSchema.methods.comparePassword = function comparePassword(candidatePassword, cb) {
 	bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-		if (err) { return cb(err); }
-
-		cb(null, isMatch);
+		if (!err) {
+			return cb(null, isMatch);
+		}
+		return cb(err);
 	});
+};
+
+UserSchema.methods.generateJWT = function generateJWT() {
+	const today = new Date();
+	const exp = new Date(today);
+	exp.setDate(today.getDate() + 60);
+
+	return jwt.sign({
+		id: this._id,
+		email: this.email,
+		exp: parseInt(exp.getTime() / 100, 10)
+	}, process.env.SECRET);
+};
+
+UserSchema.methods.toAuthJSON = function toAuthJSON() {
+	return {
+		id: this._id,
+		email: this.email,
+		token: this.generateJWT(),
+		role: this.role
+	};
 };
 
 module.exports = mongoose.model('User', UserSchema);
