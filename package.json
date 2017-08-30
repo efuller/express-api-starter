@@ -14,7 +14,6 @@
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
-    "dotenv": "^4.0.0",
     "eslint": "^4.3.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-plugin-import": "^2.7.0",
@@ -22,6 +21,7 @@
     "eslint-plugin-react": "^7.1.0"
   },
   "dependencies": {
+    "dotenv": "^4.0.0",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.17.2",
     "cors": "^2.8.4",
