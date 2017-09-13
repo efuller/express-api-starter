@@ -21,8 +21,12 @@ router.route('/admins-only')
 		res.send({ content: 'Admin dashboard is working.' });
 	});
 
+router.route('/me')
+	.get(requireAuth, userController.me);
+
 // View user profile route.
 router.route('/:userId')
 	.get(requireAuth, userController.viewProfile);
+
 
 module.exports = router;

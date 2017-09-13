@@ -21,7 +21,6 @@ exports.login = function (req, res, next) {
 				if (!isMatch) {
 					res.status(401).json({ message: 'Passwords did not match.' });
 				} else {
-					console.log(res.user);
 					res.json({ message: 'ok', user: user.toAuthJSON() });
 				}
 			});

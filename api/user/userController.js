@@ -16,3 +16,17 @@ exports.viewProfile = function (req, res, next) {
 		return res.status(200).json({ user: userToReturn });
 	});
 };
+
+exports.me = function(req, res, next) {
+	const user = req.user;
+	User.findById(user.id, (err, user) => {
+		if (err) {
+			res.status(400).json({ error: 'No user could be found for this ID.' });
+			return next(err);
+		}
+
+		const userToReturn = user.toAuthJSON();
+
+		return res.status(200).json({ user: userToReturn });
+	});
+};
