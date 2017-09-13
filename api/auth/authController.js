@@ -12,14 +12,14 @@ exports.login = function (req, res, next) {
 	User.findOne({ email: userEmail })
 		.then(function(user) {
 			if (!user) {
-				res.status(401).json({ message: 'No such user found' });
+				res.status(401).json({ errors: { global: 'No such user found' } });
 				return next();
 			}
 
 			user.comparePassword(password, function(err, isMatch) {
 				if (err) { next(err); }
 				if (!isMatch) {
-					res.status(401).json({ message: 'Passwords did not match.' });
+					res.status(401).json({ errors: { global: 'Passwords did not match.' } });
 				} else {
 					res.json({ message: 'ok', user: user.toAuthJSON() });
 				}
