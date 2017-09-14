@@ -36,19 +36,24 @@ exports.register = function (req, res, next) {
 	const lastName = req.body.lastName;
 	const password = req.body.password;
 
-	// Return error if no email provided
-	if (!email) {
-		return res.status(422).send({ error: 'You must enter an email address.' });
+	// Return error if full name not provided
+	if (!lastName) {
+		return res.status(422).send({ errors: { firstName: 'You must enter your first name.' } });
 	}
 
 	// Return error if full name not provided
-	if (!firstName || !lastName) {
-		return res.status(422).send({ error: 'You must enter your full name.' });
+	if (!lastName) {
+		return res.status(422).send({ errors: { lastName: 'You must enter your last name.' } });
+	}
+
+	// Return error if no email provided
+	if (!email) {
+		return res.status(422).send({ errors: { email: 'You must enter an email address.' } });
 	}
 
 	// Return error if no password provided
 	if (!password) {
-		return res.status(422).send({ error: 'You must enter a password.' });
+		return res.status(422).send({ errors: { password: 'You must enter a password.' } });
 	}
 
 	User.findOne({ email }, (err, existingUser) => {
@@ -56,7 +61,8 @@ exports.register = function (req, res, next) {
 
 		// If user is not unique, return error
 		if (existingUser) {
-			return res.status(422).send({ error: 'That email address is already in use.' });
+			console.log(existingUser);
+			res.status(422).send({ errors: { global: 'That email address is already in use.' } });
 		}
 
 		// If email is unique and password was provided, create account
